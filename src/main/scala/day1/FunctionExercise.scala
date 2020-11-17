@@ -1,71 +1,72 @@
 package day1
 
+object FunctionsExercise extends App {
+  //practicing HoF which parametric polymorphic
+  //excersise 1 def tupled[T1, T2, R](f: (T1, T2) => R): ((T1, T2)) => R = ???
+  def tupled[T1, T2, R](f: (T1, T2) => R): ((T1, T2)) => R =
+    input => f(input._1, input._2)
+  val addTupleElements: Tuple2[Int, Int] => Int = t => t._1 + t._2
+  println(s"excersise 1-> tupled = " + addTupleElements(10, 20))
 
-object FunctionExercise extends App {
+  //excersise 2
+  //def untupled[T1, T2, R](f: ((T1, T2)) => R): (T1, T2) => R = ???
+  def untupled[T1, T2, R](f: ((T1, T2)) => R): (T1, T2) => R = (val1, val2) => f((val1, val2))
+  val addTupleElements1: (Int, Int) => Int = (a, b) => addTupleElements((a, b))
+  println(s"excersise 2-> untupled = " + addTupleElements1(10, 20))
 
-  sealed trait mkToArray {
-    //Single Abstract Method
-    def mkArray(mk: String): Array[String]
-    // concrete method
-    def printString(str:String) = println(s"input string is $str")
+  //excersise 3
+  // def makeCurried[A,B,C](f:(A,B) => C): A => B => C = ???
+  def makeCurried[A, B, C](f: (A, B) => C): A => B => C = valueA => valueB => f(valueA, valueB)
+  def addCurFunc(a: Int, b: Int): Int = a + b
+  println(s"excersise 3-> makeCurried = " + makeCurried(addCurFunc)(10)(20))
+
+  //excersise 4
+  //def uncurry[A,B,C](f:A => B => C): (A, B) => C = ???
+  def uncurry[A, B, C](f: A => B => C): (A, B) => C = (valueA, valueB) => f(valueA)(valueB)
+  def addUnCurFunc(a: Int)(b: Int): Int = a + b
+  println(s"excersise 4-> addUnCurFunc = " + uncurry(addUnCurFunc)(10, 20))
+
+
+  // excercise 5
+  // def flipArgs[A,B,C](f:A => B => C): B => A => C = ???
+  def flipArgs[A, B, C](f: A => B => C): B => A => C = valueA => valueB => f(valueB)(valueA)
+  def addflipArgs(a: String)(b: String): String = a + b
+  println(s"excersise 5-> flipArgs = " + flipArgs(addflipArgs)("Shantanu")("Dutta"))
+
+  // exercise 6
+  //def fanOut[C, A, B](fst: C => A, snd: C => B): C => (A, B) = ???
+  def fanOut[C, A, B](fst: C => A, snd: C => B): C => (A, B) = valueC => (fst(valueC), snd(valueC))
+  def fNameUpper = (s: String) => s.toUpperCase
+  def fReverse = (s: String) => s.reverse
+  println(s"excersise 6-> fanOut = " + fanOut(fNameUpper, fReverse)("Shantanu"))
+
+  //exercise 7
+  // def fanIn[C, A, B](h: C => (A, B)): (C => A, C => B) = ???
+  def fanIn[C, A, B](h: C => (A, B)): (C => A, C => B) =  (h(_)._1,h(_)._2)
+  def spitIntoTuple(str:String) = (str.charAt(1),str.contains(str.charAt(1)))
+  println(s"excersise 7-> fanIn = " + )
+  //exercise 8
+  // def bimap[A, A1, B, B1](f: A => A1, g: B => B1): ((A, B)) => (A1, B1) = ???
+  def bimap[A, A1, B, B1](f: A => A1, g: B => B1): ((A, B)) => (A1, B1) = ???
+
+  //exercise 9
+  // def either[C, A, B](f: A => C, g: B => C): Either[A, B] => C = ???
+  def either[C, A, B](f: A => C, g: B => C): Either[A, B] => C = {
+    case Left(l) => f(l)
+    case Right(r) => g(r)
   }
+  println(s"excersise 9-> either = " + either(fNameUpper, fReverse)(Right("Shantanu"))) // reverse
+  println(s"excersise 9-> either = " + either(fNameUpper, fReverse)(Left("Shantanu"))) // Uppercase
 
-  // way 1
-  val stringToArray = new mkToArray {
-    override def mkArray ( myString : String ) : Array [ String ] = myString.split ( "" )
-  }
+  //Ecercise 10
+  // def chain[T](fs:Seq[T => T]):T => T = ???
+  def chain[T](fs: Seq[T => T]): T => T = t => fs.foldLeft(t)((a, op) => op(a))
 
-  // way 2 SAM (Single Abstract Method)
-  val stringToArray1 =  ( myString : String ) =>  myString.split ( "" )
+  println(s"excersise 10-> chain 1 = " + chain[Int](Seq({_ + 10}, {_ + 10}))(10))
+  println(s"excersise 10-> chain 2= " + chain[String](Seq({_ + "Second"}, {_ + "Third"}))("First"))
+  def serviceCharge: Double => Double = a => a + (a * (10D / 100))
+  def VAT: Double => Double = a => a + (a * (5D / 100))
+  println(chain[Double](Seq(serviceCharge, VAT))(1000D))
 
-
-//  Usually, we don’t need SAM in scala, as scala already has first class generic function type,
-//  eta-expansion and a lot more. SAM reduces the readability as implicit conversion does. One can
-//  always use type alias to give function a more understandable name, instead of using SAM.
-//  SAM type cannot be pattern matched, at least for now.
-
-
-  def f(i:Int):Int = i*2
-  val ff:Int=>Int = (i) => i*2
-
-  def g(i:Int):Int = i + 2
-  val gg = (i:Int) => i + 2
-
-  //eta expansion - The expression e _ is well-formed if e is of method type or
-  // if e is a call-by-name parameter. If e is a method with parameters, e _ represents e converted
-  // to a function type by eta expansion.
-  // math.sin _	x => math.sin(x)
-
-  //someMethod _ will roughly be translated to a new function object like this
-//  new Function1[Int, Int] {
-//    def apply(x: Int): Int = someMethod(x)
-//  }
-  List(f _ , g _)
-  List[Int => Int](f, g)
-
-
-
-  //***********************************************
-  //A simple case for pipe
-  //consider the following functions already defined
-  type Amount = Double
-  sealed trait Tax {
-    val formulae:Amount => Amount
-  }
-
-  object Tax {
-    case class VAT(formulae:Amount => Amount = _ * (3D / 100)) extends Tax
-    case class ServiceTax(formulae:Amount => Amount = _ * (2D / 100)) extends Tax
-    case class ServiceCharge(formulae:Amount => Amount) extends Tax
-    val addTaxToTotal:Tax => Amount => Amount = tax => amount => tax.formulae(amount) + amount
-
-    def addTaxOnBill(totalAmount:Amount):Amount = ???
-
-    def addTaxOnBillWithDebug(totalAmount:Amount):Amount = ???
-
-  }
 
 }
-
-
-
