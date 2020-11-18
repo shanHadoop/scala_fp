@@ -10,6 +10,8 @@ object FunctionLearning extends App {
   def fun(a: String, b: String): String = {
     a + " " + b
   }
+  //val f : A => B => C
+  //val f : Function1[A, Function1[B, C]]
 
   // funtions are expression and they have a value
   println(fun1(1, "Hello"))

@@ -41,13 +41,18 @@ object FunctionsExercise extends App {
   println(s"excersise 6-> fanOut = " + fanOut(fNameUpper, fReverse)("Shantanu"))
 
   //exercise 7
-  // def fanIn[C, A, B](h: C => (A, B)): (C => A, C => B) = ???
-  def fanIn[C, A, B](h: C => (A, B)): (C => A, C => B) =  (h(_)._1,h(_)._2)
-  def spitIntoTuple(str:String) = (str.charAt(1),str.contains(str.charAt(1)))
-  println(s"excersise 7-> fanIn = " + )
+  //def fanIn[C, A, B](h: C => (A, B)): (C => A, C => B) = ???
+  def fanIn[C, A, B](h: C => (A, B)): (C => A, C => B) =  (a:String) => (fNameUpper(a),fReverse(a))
+  def spitIntoTuple(str:String) = (fNameUpper,fReverse)
+//  println(s"excersise 7-> fanIn = " + fanIn(spitIntoTuple)("Shantanu"))
+
+
   //exercise 8
   // def bimap[A, A1, B, B1](f: A => A1, g: B => B1): ((A, B)) => (A1, B1) = ???
-  def bimap[A, A1, B, B1](f: A => A1, g: B => B1): ((A, B)) => (A1, B1) = ???
+  def bimap[A, A1, B, B1](f: A => A1, g: B => B1): ((A, B)) => (A1, B1) =
+    valueTupleAB => (f(valueTupleAB._1) ,g(valueTupleAB._2))
+  println(s"excersise 8-> bimap = " + bimap(fNameUpper,fReverse)(("Shantanu","Dutta")))
+
 
   //exercise 9
   // def either[C, A, B](f: A => C, g: B => C): Either[A, B] => C = ???
