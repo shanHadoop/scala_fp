@@ -2,6 +2,8 @@ package day1
 
 import day1.FunctionLearning.TaxIN.{ServiceChargeTaxIN, ServiceTaxIN, VATIN}
 
+import scala.annotation.tailrec
+
 object FunctionLearning extends App {
   def fun1(a: Int, b: String) = {
     a + " " + b
@@ -18,15 +20,16 @@ object FunctionLearning extends App {
   val paramLess: (Int => Int) = x => x + 10;
 
   // loop -- avoid looping control use tail recursion
-  def repeat(str: String, nTime: Int): String = nTime match {
-    case 0 => ""
-    case 1 => str
-    case _ => str + repeat(str, nTime - 1)
+  @tailrec
+  def repeat(str: String, nTime: Int,acc:String): String = nTime match {
+    case 0  => acc
+    case _ => repeat(str, nTime - 1,acc)
   }
 
-  println(repeat("Shantanu ", 1))
+  println(repeat("Shantanu ", 1,""))
 
   def isPrime(n: Int) = {
+    @tailrec
     def go(num: Int, isPrimeNum: Boolean): Boolean = {
       if (num <= 1) isPrimeNum
       else go((num - 1), ((n % num != 0) && isPrimeNum))
@@ -62,13 +65,18 @@ object FunctionLearning extends App {
   // and its result is passed along to the function f(x).
   //  Ordering using andThen: f(x) andThen g(x) = g(f(x))
   //  Ordering using compose: f(x) compose g(x) = f(g(x))
-
+//f compose g compose h  f(g(h(x)))
   val addAllTax: TaxIN => Double => Double = tax => amount => tax.applyTAXFormulate(amount) + amount
-  val addAllTax_withComposit: Double => Double = addAllTax(ServiceChargeTaxIN(_ * .40)).
+  val addAllTax_withComposit: Double => Double =
+    addAllTax(ServiceChargeTaxIN(_ * .40)).
     compose(addAllTax(ServiceTaxIN())).
     compose(addAllTax(VATIN()))
 
-    println(addAllTax_withComposit(10000))
+    println("With Compose " +addAllTax_withComposit(10000))
+
+ val addAllTaxAndThen = addAllTax(VATIN()) andThen addAllTax(ServiceTaxIN()) andThen addAllTax(ServiceChargeTaxIN(_ * .40))
+
+  println("With AndThen " + addAllTaxAndThen(10000))
 
 
   import scala.util.chaining._
@@ -86,6 +94,8 @@ object FunctionLearning extends App {
 type myfunc[A,B] = A => B
 trait myFunction1[A,B] extends (A => B)
 case class FunctionWrapper[A,B](f:A => B)
-
+  val list = List(1,2,3,4)
+  list.take(1)
+    list.fold(100)(_ + _)
 
 }

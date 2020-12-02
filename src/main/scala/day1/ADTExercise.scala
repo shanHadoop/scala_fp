@@ -107,7 +107,7 @@ println(s"${printTypes(1000L)}")
   /**
     * Exercise 5
     * Pattern matching with regular expression
-    * Note : uncomment and implement
+    * Note : uncomment and implementsma
     */
   println("Exercise 5..................")
   val date = raw"""(\d{4})-(\d{2})-(\d{2})""".r

@@ -18,4 +18,23 @@ object CreatingTypeExercise extends App {
   println(emp)
 
 
+  //Structure type
+  class SomeClassIntPrint {
+    def print1:(Int)=> String  = (x) => s"Int -> String $x"
+    def print2:(Boolean)=> String  = (x)=> s"Int -> String $x"
+  }
+
+  class SomeClassBooleanPrint {
+    def print1:(Boolean)=> String  = (x)=> s"Int -> String $x"
+  }
+
+  // here function/method name should be same as the method of the class , which object we want to pass.
+  def myFuc[A,B](stc:{def print1:Int => String}) = println(stc.print1(1000))
+  def myFuc1[A,B](stc:{def print2:Boolean => String}) = println(stc.print2(true))
+
+
+  myFuc(new SomeClassIntPrint)
+  myFuc1(new SomeClassIntPrint)
+
+
 }
