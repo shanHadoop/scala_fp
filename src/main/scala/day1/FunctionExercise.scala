@@ -303,4 +303,7 @@ object FunctionsExercise extends App {
   println(s" Before flatten -- $l")
   println(s" After flatten -- ${flatten(l)}")
 
+
+
+
 }
