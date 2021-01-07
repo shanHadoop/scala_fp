@@ -75,8 +75,10 @@ object ForDesugared {
   //desugared code for three generators
   gen1.flatMap(x => gen1.flatMap(y => gen1.map(z => x * y * z)))
 
-  def reverse[A <: String ](myA:A) ={
-    myA.rever
-  }
+val ListSet = for {
+  x1 <- Map(1->"One",2-> "Two")
+  x <- Set(1,2,3,4)
+  y <- List('a','b')
+} yield (x + "" + y)
 
 }
